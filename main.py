@@ -28,7 +28,8 @@ deployment = kplus.Deployment(      # docs: https://cdk8s.io/docs/latest/basics/
     "deployment",
     metadata=cdk8s.ApiObjectMetadata(
         name="tech-test-deployment",
-    ),
+    ),    
+    replicas=5  # Set the number of replicas to 5  Additional Task 2 
 )
 
 # Add an Nginx container to the deployment with specific configurations.
