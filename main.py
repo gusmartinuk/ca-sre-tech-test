@@ -1,4 +1,5 @@
 import cdk8s_plus_26 as kplus
+from cdk8s import Duration
 import cdk8s
 import os
 
@@ -20,7 +21,7 @@ config_map = kplus.ConfigMap(           # docs: https://cdk8s.io/docs/latest/plu
 )
 
 # Create a Volume from the ConfigMap. Volumes in Kubernetes are used to store data and make it accessible to containers.
-volume = kplus.Volume.from_config_map(chart, "volume", config_map=config_map) # docs: https://cdk8s.io/docs/latest/plus/cdk8s-plus-25/pod/#adding-volumes
+volume = kplus.Volume.from_config_map(chart, "volume", config_map=config_map) # docs: https://cdk8s.io/docs/latest/plus/cdk8s-plus-26/pod/#adding-volumes
 
 # Define a Deployment. Deployments manage stateless applications on Kubernetes, ensuring specified number of pod replicas run.
 deployment = kplus.Deployment(      # docs: https://cdk8s.io/docs/latest/basics/api-object/#resource-names
@@ -33,7 +34,7 @@ deployment = kplus.Deployment(      # docs: https://cdk8s.io/docs/latest/basics/
 )
 
 # Add an Nginx container to the deployment with specific configurations.
-deployment.add_container(   # docs: https://cdk8s.io/docs/latest/reference/cdk8s-plus-25/python/#add_container
+deployment.add_container(   # docs: https://cdk8s.io/docs/latest/reference/cdk8s-plus-26/python/#add_container
     image="nginx:latest",   # Specify the Docker image to use.
     port=80,                # Expose port 80 of the container.
     name="nginx",           # Name of the container.
@@ -47,7 +48,16 @@ deployment.add_container(   # docs: https://cdk8s.io/docs/latest/reference/cdk8s
             volume=volume,
         )
     ],
-)
+    liveness=kplus.Probe.from_http_get(     # https://cdk8s.io/docs/latest/reference/cdk8s-plus-26/python/#probe
+        path="/",
+        port=80,
+        initial_delay_seconds=Duration.seconds(30),
+        period_seconds=Duration.seconds(10),
+        timeout_seconds=Duration.seconds(5) 
+        
+    )
+ )
+
 
 # Create a Service to expose the deployment. Services provide a way to access applications running on a set of Pods.
 service = kplus.Service(    # docs: https://cdk8s.io/docs/latest/plus/cdk8s-plus-26/service/
