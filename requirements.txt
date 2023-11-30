@@ -1,2 +1,2 @@
-cdk8s_plus_26
+cdk8s-plus-26
 cdk8s
