@@ -32,7 +32,8 @@ deployment.add_container(
     port=80,
     name="nginx",
     security_context=kplus.ContainerSecurityContextProps(
-        ensure_non_root=False, read_only_root_filesystem=True
+        ensure_non_root=False, 
+        read_only_root_filesystem=False  # before: read_only_root_filesystem=True (write permission required)
     ),
     volume_mounts=[
         kplus.VolumeMount(
